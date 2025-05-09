@@ -1,0 +1,23 @@
+The Capital of the Universe is in Danger, and you are the Grand General in charge of protecting it.
+You are the commander of 3 armies.
+
+The Stalkers of the River Delta
+	After a 1000 year long war that left their planet in ruins, the stalkers established a network of cities and towns in the trees.
+	They are a force for good because they provide a home for refugees of the 1000 year long war and protect them from environmental
+	dangers.
+
+The Royal Guard
+	Trained to protect Malika, Queen of the Universe. The royal guard is said to have taken a birth rite with the gods, meaning the gods are quite literally on their side, so long as they do not do something to fall out of favor of the gods. After all, the gods do hold high and strange standards. They wield giant katanas and ride on horseback, they have gigantic sets of armor with beautiful feathers and with engravings that show their family crest, allegiance to the monarchy, and to the gods. The armor is highly mobile, greatest in the universe, and forged proudly by the Dwarves of King's Mountain.
+
+The Dwarves of King's Mountain
+	The Dwarves are an honest and hardworking people. Not much is known about them except for the fact that they rarely start conflict amongst each other, and spend most of their time in the mountains either mining, or drinking their famously potent dwarven ale.
+
+
+The Grand Wizards:
+	Each military you command has a Grand Wizard they command. Each wizard has spent their entire life perfecing an AoE magic attack.
+
+	The Royal Wizard: Grace. Grace is a single-use AoE miracle that can mass heal a radius of allies (AoE is a square with a radius of 10.
+
+	The Dwarven Wizard: God Quake. Use with caution. AoE is a square with a radius of 10.
+
+	The Stalker Wizard: Hellfire. Hellfire is an AoE that rains projectiles from the heavens. has a 5 minute cooldown. AoE is a square with a radius of 10.

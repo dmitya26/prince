@@ -19,5 +19,13 @@ The Grand Wizards:
 	The Royal Wizard: Grace. Grace is a single-use AoE miracle that can mass heal a radius of allies (AoE is a square with a radius of 10.
 
 	The Dwarven Wizard: God Quake. Use with caution. AoE is a square with a radius of 10.
+		- Radius:   radius of 15.
+		- Cooldown: only use once.
+		- Lasts:    N/A
+		- Damage:   Kill everything.
 
-	The Stalker Wizard: Hellfire. Hellfire is an AoE that rains projectiles from the heavens. has a 5 minute cooldown. AoE is a square with a radius of 10.
+	The Stalker Wizard: Hellfire. Hellfire is an AoE that rains projectiles from the heavens.
+		- Radius:   radius of 10.
+		- Cooldown: cooldown 10 turns.
+		- Lasts:    lasts 10 turns.
+		- Damage:   10 damage per projectile.

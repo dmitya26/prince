@@ -5,21 +5,8 @@ Render = { -- idk how I feel about this table. code smell... works for now thoug
 	["STONE"]  = string.char(27) .. "[37m&"  .. string.char(27) .. "[0m", -- Stone.
 	["CURSOR"] = string.char(27) .. "[1;31m*" .. string.char(27) .. "[0m", -- Cursor.
 	["GUARD"]  = string.char(27) .. "[1;31mG" .. string.char(27) .. "[0m",  -- Guard Legion.
---	["GUARD"]  = string.char(27) .. "[33mG"   .. string.char(27) .. "[0m",  -- Guard Legion.
 }
 
-Legion = {
-	class="", -- Can be dwarf, stalker, or guard.
-	amount=1000000,
-	health=0, -- change as needed.
-	damage=0, -- change as needed.
-
-	location_x=0,
-	location_y=0,
-
-	target_x=nil,
-	target_y=nil,
-}
 
 State = {
 	cursor_x=1,
@@ -29,8 +16,8 @@ State = {
 	map_y = 100,
 
 	-- basically this is for sliding window.
-	cursor_window_radius_y = 20,
-	cursor_window_radius_x = 41,
+	cursor_window_radius_y = 15,
+	cursor_window_radius_x = 30,
 
 	buffered_entity=nil,
 
@@ -38,12 +25,6 @@ State = {
 
 	turn=true, -- true=player false=opponent
 
-	--[[
-	-- water 1
-	-- tree  2
-	-- grass 3
-	-- stone 4
-	--]]
 	map={},
 
 	code=0, -- continue, -1 error, 1 exit.
@@ -51,32 +32,36 @@ State = {
 
 status_print=""
 
-function table.clone(org)
-	local u = { }
-	for k, v in ipairs(org) do u[k] = v end
-	return setmetatable(u, getmetatable(org))
+local function new_legion (legion_class, hp, dmg, loc_x, loc_y)
+	return {
+		["class"]=legion_class, -- Can be dwarf, stalker, or guard.
+		["amount"]=1000000,
+		["health"]=hp, -- change as needed.
+		["damage"]=dmg, -- change as needed.
+
+		["location_x"]=loc_x,
+		["location_y"]=loc_y,
+
+		["target_x"]=nil,
+		["target_y"]=nil,
+	}
 end
 
-function contains_legion (x, y)
+local function contains_legion (x, y)
 	for i,c in ipairs(State.legions) do
 		if c.location_x == x and c.location_y == y then
 			return c
-		else
-			return nil
 		end
 	end
-	return nil
 end
 
-function organic (seed)
+local function organic (seed)
 	math.randomseed(seed)
 	-- layer1, grass
 	for i=1,State.map_y do
--- 		print(i)
 		table.insert(State.map, {})
 		for j=1,State.map_x do
 			table.insert(State.map[i], "GRASS")
-			--map[i][j].insert("WATER")
 		end
 	end
 
@@ -118,43 +103,22 @@ function organic (seed)
 			local random=math.random(1,10)
 			if random==1 then
 				State.map[i][j]="STONE"
-			elseif random==2 then
---				local Legion = {
---					class="GUARD", -- Can be dwarf, stalker, or guard.
---					amount=1000000,
---					health=100, -- change as needed.
---					damage=100, -- change as needed.
---
---					location_x=math.random(1, State.map_x),
---					location_y=math.random(1, State.map_y),
---
---					target_x=nil,
---					target_y=nil,
---				}
---				l = table.clone(Legion)
---				l.class="GUARD"
---				l.location_x = math.random(1, State.map_x)
---				l.location_y = math.random(1, State.map_y)
-				table.insert(State.legions, {
-					class="GUARD", -- Can be dwarf, stalker, or guard.
-					amount=1000000,
-					health=100, -- change as needed.
-					damage=100, -- change as needed.
+			elseif random>=2 and random <=4 then
+				local x = math.random(1, State.map_x)
+				local y = math.random(1, State.map_y)
+				math.randomseed(seed*2)
 
-					location_x=math.random(1, State.map_x),
-					location_y=math.random(1, State.map_y),
-
-					target_x=nil,
-					target_y=nil,
-				})
+				local legion = new_legion("GUARD", 100, 100, x, y)
+  				table.insert(State.legions, legion)
+				x=nil
+				y=nil
 			end
 		end
 	end
 end
 
 -- A boolean is returned for whether the input counts as a turn.
-function keyboard_handler ()
---	io.write("Input > ")
+local function keyboard_handler ()
 	local ch = io.read(1)
 	if ch == "q" then
 		State.code=1
@@ -197,7 +161,7 @@ function keyboard_handler ()
 	end
 end
 
-function update_entity_position ()
+local function update_entity_position ()
 	for i,c in ipairs(State.legions) do
 		if c.target_x ~= nil and c.target_y ~= nil then
 			c.location_x = c.target_x
@@ -206,7 +170,7 @@ function update_entity_position ()
 	end
 end
 
-function render_map ()
+local function render_map ()
 	os.execute("clear")
 	local nums = ""
 	local num=0
@@ -235,10 +199,11 @@ function render_map ()
 			local current = State.map[i][j]
 			local render = Render[current]
 			local legion = contains_legion(j, i)
-			if i == State.cursor_y and j == State.cursor_x then
-				io.write(Render["CURSOR"])
-			elseif legion ~= nil then
+			if legion ~= nil then
 				io.write(Render[legion.class])
+				legion=nil
+			elseif i == State.cursor_y and j == State.cursor_x then
+				io.write(Render["CURSOR"])
 			elseif render ~= nil then
 				io.write(render)
 			end
@@ -249,13 +214,13 @@ function render_map ()
 
 end
 
-function state_init ()
+local function state_init ()
 	-- potentially load save files in this function.
 	-- load seeds and world changes.
-	organic(10)
+	organic(100)
 end
 
-function frame ()
+local function frame ()
 	if keyboard_handler() then
 		State.turn = not State.turn
 	end
@@ -263,8 +228,9 @@ function frame ()
 	render_map()
 end
 
-function main()
+local function main()
 	state_init()
+
 	while State.code == 0 do
 		frame()
 	end

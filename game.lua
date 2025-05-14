@@ -1,25 +1,30 @@
 Render = { -- idk how I feel about this table. code smell... works for now though.
-	["WATER"]  = string.char(27) .. "[94m@"  .. string.char(27) .. "[0m", -- Water.
-	["TREE"]   = string.char(27) .. "[32m♠"  .. string.char(27) .. "[0m", -- Tree.
-	["GRASS"]  = string.char(27) .. "[92m%"  .. string.char(27) .. "[0m", -- Grass.
-	["STONE"]  = string.char(27) .. "[37m&"  .. string.char(27) .. "[0m", -- Stone.
-	["CURSOR"] = string.char(27) .. "[1;31m*" .. string.char(27) .. "[0m", -- Cursor.
-	["GUARD"]  = string.char(27) .. "[1;31mG" .. string.char(27) .. "[0m",  -- Guard Legion.
+	["WATER"]   = string.char(27) .. "[94m@"  .. string.char(27) .. "[0m", -- Water.
+	["TREE"]    = string.char(27) .. "[32m♠"  .. string.char(27) .. "[0m", -- Tree.
+	["GRASS"]   = string.char(27) .. "[92m%"  .. string.char(27) .. "[0m", -- Grass.
+	["STONE"]   = string.char(27) .. "[37m&"  .. string.char(27) .. "[0m", -- Stone.
+	["CURSOR"]  = string.char(27) .. "[48;5;196m*" .. string.char(27) .. "[0m", -- Cursor.
+	["GUARD"]   = string.char(27) .. "[1;31mG" .. string.char(27) .. "[0m",  -- Guard Legion.
+	["STALKER"] = string.char(27) .. "[1;38;5;201mS"   .. string.char(27) .. "[0m",  -- Stalker Legion.
+	["DWARF"] = string.char(27) .. "[1;1mD"   .. string.char(27) .. "[0m",  -- Stalker Legion.
 }
+
+MAPSIZE_X=80
+MAPSIZE_Y=80
 
 
 State = {
-	cursor_x=1,
-	cursor_y=1,
+	map_x = MAPSIZE_X,
+	map_y = MAPSIZE_Y,
 
-	map_x = 100,
-	map_y = 100,
+	cursor_x=10,
+	cursor_y=MAPSIZE_Y-5,
 
 	-- basically this is for sliding window.
 	cursor_window_radius_y = 15,
 	cursor_window_radius_x = 30,
 
-	buffered_entity=nil,
+	buffered_entity={},
 
 	legions={},
 
@@ -47,10 +52,12 @@ local function new_legion (legion_class, hp, dmg, loc_x, loc_y)
 	}
 end
 
-local function contains_legion (x, y)
-	for i,c in ipairs(State.legions) do
-		if c.location_x == x and c.location_y == y then
-			return c
+local function contains_legion (x, y, lower_limit_x, upper_limit_x, lower_limit_y, upper_limit_y)
+	for i=lower_limit_y,upper_limit_y do
+		for j=lower_limit_x,upper_limit_x do
+			if j == x and i == y then
+				return State.legions[j][i]
+			end
 		end
 	end
 end
@@ -60,8 +67,10 @@ local function organic (seed)
 	-- layer1, grass
 	for i=1,State.map_y do
 		table.insert(State.map, {})
+		table.insert(State.legions, {})
 		for j=1,State.map_x do
 			table.insert(State.map[i], "GRASS")
+			table.insert(State.legions[i], nil)
 		end
 	end
 
@@ -100,18 +109,30 @@ local function organic (seed)
 	-- layer4, stone, entities.
 	for i,c in ipairs(State.map) do
 		for j,d in ipairs(c) do
-			local random=math.random(1,10)
-			if random==1 then
+			local random=math.random(1,100)
+			if random == 5 then
 				State.map[i][j]="STONE"
-			elseif random>=2 and random <=4 then
-				local x = math.random(1, State.map_x)
-				local y = math.random(1, State.map_y)
-				math.randomseed(seed*2)
+			elseif random==10 then
+				local guard_x = math.random(1, State.map_x)
+				local guard_y = math.random(State.map_y/2, State.map_y)
 
-				local legion = new_legion("GUARD", 100, 100, x, y)
-  				table.insert(State.legions, legion)
-				x=nil
-				y=nil
+				local guard_legion = new_legion("GUARD", 100, 100, guard_x, guard_y)
+				State.legions[guard_y][guard_x] = guard_legion
+--  				table.insert(State.legions, guard_legion)
+			elseif random==11 then
+				local stalker_x = math.random(1, State.map_x)
+				local stalker_y = math.random(State.map_y/2, State.map_y)
+
+				local stalker_legion = new_legion("STALKER", 100, 100, stalker_x, stalker_y)
+				State.legions[stalker_y][stalker_x] = stalker_legion
+--				table.insert(State.legions, stalker_legion)
+			elseif random==12 then
+				local dwarf_x = math.random(1, State.map_x)
+				local dwarf_y = math.random(State.map_y/2, State.map_y)
+
+				local dwarf_legion = new_legion("DWARF", 100, 100, dwarf_x, dwarf_y)
+				State.legions[dwarf_y][dwarf_x] = dwarf_legion
+--				table.insert(State.legions, dwarf_legion)
 			end
 		end
 	end
@@ -140,23 +161,25 @@ local function keyboard_handler ()
 		return false
 	elseif ch == "b" then
 		-- Buffer a legion.
-		legion = contains_legion(State.cursor_x, State.cursor_y)
+		local legion = contains_legion(State.cursor_x, State.cursor_y)
 		if legion ~= nil then
-			State.buffered_entity = legion
+			table.insert(State.buffered_entity, legion)
 		end
-		if State.buffered_entity ~= nil then
-			status_print = "Buffered: " .. State.buffered_entity.class .. "\n"
+		if legion ~= nil then
+			status_print = "Buffered: " .. legion.class .. "\n"
 		end
+		legion=nil
 		return false
 	elseif ch == "m" then
 		-- Flush buffered legion.
-		local legion = State.buffered_entity
+--		local legion = State.buffered_entity[0]
+		local legion = table.remove(State.buffered_entity, 1)
 		if legion ~= nil then
-			status_print = "Moved: " .. State.buffered_entity.class .. "\n"
+			status_print = "Moved: " .. legion.class .. "\n"
 			legion.target_x=State.cursor_x
 			legion.target_y=State.cursor_y
-			State.buffered_entity=nil
 		end
+		legion=nil
 		return true
 	end
 end
@@ -198,7 +221,7 @@ local function render_map ()
 		for j=start_x,end_x do
 			local current = State.map[i][j]
 			local render = Render[current]
-			local legion = contains_legion(j, i)
+			local legion = contains_legion(j, i, start_x, end_x, start_y, end_y)
 			if legion ~= nil then
 				io.write(Render[legion.class])
 				legion=nil

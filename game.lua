@@ -35,6 +35,7 @@ State = {
 	code=0, -- continue, -1 error, 1 exit.
 }
 
+
 status_print=""
 
 local function new_legion (legion_class, hp, dmg, loc_x, loc_y)
@@ -56,7 +57,7 @@ local function contains_legion (x, y, lower_limit_x, upper_limit_x, lower_limit_
 	for i=lower_limit_y,upper_limit_y do
 		for j=lower_limit_x,upper_limit_x do
 			if j == x and i == y then
-				return State.legions[j][i]
+				return State.legions[i][j]
 			end
 		end
 	end
@@ -110,27 +111,27 @@ local function organic (seed)
 	for i,c in ipairs(State.map) do
 		for j,d in ipairs(c) do
 			local random=math.random(1,100)
-			if random == 5 then
+			if random >=1 and random  <=5 then
 				State.map[i][j]="STONE"
 			elseif random==10 then
 				local guard_x = math.random(1, State.map_x)
-				local guard_y = math.random(State.map_y/2, State.map_y)
+				local guard_y = math.random(1, State.map_y)
 
 				local guard_legion = new_legion("GUARD", 100, 100, guard_x, guard_y)
 				State.legions[guard_y][guard_x] = guard_legion
 --  				table.insert(State.legions, guard_legion)
 			elseif random==11 then
 				local stalker_x = math.random(1, State.map_x)
-				local stalker_y = math.random(State.map_y/2, State.map_y)
+				local stalker_y = math.random(1, State.map_y)
 
 				local stalker_legion = new_legion("STALKER", 100, 100, stalker_x, stalker_y)
 				State.legions[stalker_y][stalker_x] = stalker_legion
 --				table.insert(State.legions, stalker_legion)
 			elseif random==12 then
 				local dwarf_x = math.random(1, State.map_x)
-				local dwarf_y = math.random(State.map_y/2, State.map_y)
+				local dwarf_y = math.random(1, State.map_y)
 
-				local dwarf_legion = new_legion("DWARF", 100, 100, dwarf_x, dwarf_y)
+				local dwarf_legion = new_legion("DWARF", 100, 100, 1, dwarf_x, dwarf_y)
 				State.legions[dwarf_y][dwarf_x] = dwarf_legion
 --				table.insert(State.legions, dwarf_legion)
 			end
@@ -141,6 +142,25 @@ end
 -- A boolean is returned for whether the input counts as a turn.
 local function keyboard_handler ()
 	local ch = io.read(1)
+
+	local start_y=(State.cursor_y-State.cursor_window_radius_y)
+	if start_y < 1 then
+		start_y = 1
+	end
+	local end_y=(State.cursor_y+State.cursor_window_radius_y)
+	if end_y > State.map_y then
+		end_y = State.map_y
+	end
+
+	local start_x=(State.cursor_x-State.cursor_window_radius_x)
+	if start_x < 1 then
+		start_x = 1
+	end
+	local end_x=(State.cursor_x+State.cursor_window_radius_x)
+	if end_x > State.map_x then
+		end_x = State.map_x
+	end
+
 	if ch == "q" then
 		State.code=1
 	elseif ch == "s" then
@@ -161,7 +181,7 @@ local function keyboard_handler ()
 		return false
 	elseif ch == "b" then
 		-- Buffer a legion.
-		local legion = contains_legion(State.cursor_x, State.cursor_y)
+		local legion = contains_legion(State.cursor_x, State.cursor_y, start_x, end_x, start_y, end_y)
 		if legion ~= nil then
 			table.insert(State.buffered_entity, legion)
 		end

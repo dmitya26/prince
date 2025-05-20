@@ -1,31 +1,36 @@
-The Capital of the Universe is in Danger, and you are the Grand General in charge of protecting it.
-You are the commander of 3 armies.
+The capital of the galaxy is in danger, and you are in charge of protecting it.
+The command of the three best armies in the universe is now in your hands.
 
-The Stalkers of the River Delta
-	After a 1000 year long war that left their planet in ruins, the stalkers established a network of cities and towns in the trees.
-	They are a force for good because they provide a home for refugees of the 1000 year long war and protect them from environmental
-	dangers.
+===
+
+Stalkers of the River Delta
+	The stalkers live in the trees. When a great war happened thousands of years
+	ago it left the planet in ruin. A group banded together called the stalkers, and they seeked
+	refuge in the trees to protect themselves from the hostile environment below.
+	Their efforts shortly after the end of the war to help refugees is part of why they are so well regarded today.
 
 The Royal Guard
-	Trained to protect Malika, Queen of the Universe. The royal guard is said to have taken a birth rite with the gods, meaning the gods are quite literally on their side, so long as they do not do something to fall out of favor of the gods. After all, the gods do hold high and strange standards. They wield giant katanas and ride on horseback, they have gigantic sets of armor with beautiful feathers and with engravings that show their family crest, allegiance to the monarchy, and to the gods. The armor is highly mobile, greatest in the universe, and forged proudly by the Dwarves of King's Mountain.
+	The Royal Guard is tasked with defending Malika, Queen of the Galaxy.
+	They are strong but few in numbers.
+	They wield enormous katanas and brandish enormous and beautiful sets of armor with engravings and feather patterns.
+	They are a symbol of hope and peace throughout the universe.
 
-The Dwarves of King's Mountain
-	The Dwarves are an honest and hardworking people. Not much is known about them except for the fact that they rarely start conflict amongst each other, and spend most of their time in the mountains either mining, or drinking their famously potent dwarven ale.
+Dwarves of King's Mountain
+	The dwarves are humble folk.
+	They are famous for their expert blacksmithing and dwarven ale.
+	Not much is known of them. They live in the mines and keep to themselves.
 
+===
 
-The Grand Wizards:
-	Each military you command has a Grand Wizard they command. Each wizard has spent their entire life perfecing an AoE magic attack.
+Wyverns of Hell's Peak
+	They are the direct students of the devil himself.
 
-	The Royal Wizard: Grace. Grace is a single-use AoE miracle that can mass heal a radius of allies (AoE is a square with a radius of 10.
+The Marsh Demons of the Wasteland
+	The demons are hellish creatures.
+	They spawn from the pits of the hell's lava marshes.
 
-	The Dwarven Wizard: God Quake. Use with caution. AoE is a square with a radius of 10.
-		- Radius:   radius of 15.
-		- Cooldown: only use once.
-		- Lasts:    N/A
-		- Damage:   Kill everything.
-
-	The Stalker Wizard: Hellfire. Hellfire is an AoE that rains projectiles from the heavens.
-		- Radius:   radius of 10.
-		- Cooldown: cooldown 10 turns.
-		- Lasts:    lasts 10 turns.
-		- Damage:   10 damage per projectile.
+Castle Gargoyles
+	The Devil has the ability to create life.
+	The castle gargoyles are carved by stonemasons
+	and are brought to life in times of trouble.
+	Their souls are embued with the soul of the devil.

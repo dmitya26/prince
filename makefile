@@ -1,5 +1,5 @@
-LUA=lua
-FILES=*.lua
+LUA=luajit
+FILES=game.lua render_zoomed.lua battle.lua
 
 all: build
 build:
